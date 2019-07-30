@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>传统事件DOM</title>
+</head>
+<body>
+    <!-- 1.DOM结构 -->
+    <div id="App">
+        <button class="like-btn">
+            <span class="like-text">点赞</span>
+            <span>👍</span>
+        </button>
+    </div>
+    <script>
+        /* 对象：o开头
+        链接：a开头
+        布尔：b开头 */
+        // 2.获取元素
+        var oElBtn = document.querySelector('.like-btn');
+        var oElBtnText = oElBtn.querySelector('.like-text');
+        // 3.绑定事件
+        // 3.1 常量
+        var DICT = {
+            DZ: '点赞',
+            QXZ: '取消赞'
+        }
+        oElBtn.addEventListener('click',function(){
+            if(oElBtnText.innerHTML === DICT.DZ){
+                oElBtnText.innerHTML = DICT.QXZ;
+            }else{
+                oElBtnText.innerHTML = DICT.DZ;
+            }
+        });
+    </script>
+</body>
+</html>

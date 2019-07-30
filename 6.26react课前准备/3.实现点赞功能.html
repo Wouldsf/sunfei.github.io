@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>实现点赞功能</title>
+</head>
+<body>
+    <!-- 1.DOM结构 -->
+    <div id="App"></div>
+    <script>
+        // 2.使用class包装dom元素
+        class FDomBtn {
+            // 2.4 初始状态数据
+            constructor(){
+                this.state = {
+                    isLIKed: false
+                }
+                this.DITC = {
+                    DZ: '点赞',
+                    QXZ: '取消赞'
+                }
+            }
+            // 2.5修改dom
+            onChanges(){
+                this.state.isLIKed = !this.state.isLIKed;
+                if(this.state.isLIKed){
+                    document.querySelector('.like-text').innerHTML = this.DITC.QXZ;
+                }else{
+                    document.querySelector('.like-text').innerHTML = this.DITC.DZ;
+                }
+            }
+            // 2.1 生成dom元素方法
+            renderDomFromString(strDom){
+                var div = document.createElement('div');
+                div.innerHTML = strDom;
+                return div;
+            }
+            render(){
+                // 2.2 调用生成我们的真实dom元素
+                var elBtn = this.renderDomFromString(`
+                    <button class="like-btn">
+                        <span class="like-text">点赞</span>
+                        <span>👍</span>
+                    </button>
+                `);
+                // 2.3 绑定事件
+                elBtn.addEventListener('click',this.onChanges.bind(this));
+                return elBtn;
+            }
+        }
+        // 3.挂载—渲染
+        var oFdomBtn = new FDomBtn();
+        var oElApp = document.getElementById('App');
+        oElApp.appendChild(oFdomBtn.render());
+    </script>
+</body>
+</html>

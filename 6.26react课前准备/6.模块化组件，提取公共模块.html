@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>模块化组件，提取公共模块</title>
+</head>
+<body>
+    <!-- 1.DOM结构 -->
+    <div id="App"></div>
+    <script>
+        // 4.公共模块Component
+        class Component {
+            constructor(){
+                // 4.1 dom元素容器
+                this.elBtn = '';
+            }
+            // 2.5 修改dom
+            onChanges(){
+                this.setState({
+                    isLIKed: !this.state.isLIKed
+                });
+            }
+            // 2.6 设置state状态方法
+            setState(newState = {}){
+                this.state = newState;
+                // 2.7 缓存我们的旧的dom
+                var oldEl = this.elBtn;
+                // 2.8 生成一个新的dom
+                var newEl = this._render();
+                if(this.changeRender){
+                    this.changeRender(oldEl,newEl);
+                }
+            }
+            // 2.1 生成dom元素方法
+            renderDomFromString(strDom){
+                var div = document.createElement('div');
+                div.innerHTML = strDom;
+                return div;
+            }
+            // 4.7 私有方法生成dom元素，并绑定事件
+            _render(){
+                this.elBtn = this.renderDomFromString(this.render());
+                this.elBtn.addEventListener('click',this.onChanges.bind(this));
+                return this.elBtn;
+            }
+        }
+        // 2.使用class包装dom元素
+        class FDomBtn extends Component {
+            // 2.4 初始状态数据
+            constructor(){
+                // 4.6 在子级类中必须使用super方法去实例化我们的父级，必须在构造函数的顶部优先使用
+                super()
+                this.state = {
+                    isLIKed: false
+                }
+                this.DITC = {
+                    DZ: '点赞',
+                    QXZ: '取消赞'
+                }
+            }
+            render(){
+                return `
+                    <button class="like-btn">
+                        <span class="like-text">${this.state.isLIKed ? '取消赞' : '点赞'}</span>
+                        <span>👍</span>
+                    </button>
+                `
+            }
+        }
+        // 3.挂载—渲染
+        var oFdomBtn = new FDomBtn();
+        var oElApp = document.getElementById('App');
+        // 3.1 创建一个挂载方法
+        const mount = (Component,Root) => {
+            // 3.3 第一次挂载
+            Root.appendChild(oFdomBtn._render());
+            // 3.4 更新渲染dom
+            oFdomBtn.changeRender = (oldEl,newEl) => {
+                Root.insertBefore(newEl,oldEl)
+                Root.removeChild(oldEl)
+            }
+        }
+        // 3.2 挂载
+        mount(oFdomBtn,oElApp);
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>用状态控制DOM更新</title>
+</head>
+<body>
+    <!-- 1.DOM结构 -->
+    <div id="App"></div>
+    <script>
+        // 2.使用class包装dom元素
+        class FDomBtn {
+            // 2.4 初始状态数据
+            constructor(){
+                this.elBtn = '';
+                this.state = {
+                    isLIKed: false
+                }
+                this.DITC = {
+                    DZ: '点赞',
+                    QXZ: '取消赞'
+                }
+            }
+            // 2.5 修改dom
+            onChanges(){
+                this.setState({
+                    isLIKed: !this.state.isLIKed
+                });
+            }
+            // 2.6 设置state状态方法
+            setState(newState = {}){
+                this.state = newState;
+                // 2.7 缓存我们的旧的dom
+                var oldEl = this.elBtn;
+                // 2.8 生成一个新的dom
+                var newEl = this.render();
+                // 2.9 获取父级元素—根元素
+                var parentNode = oldEl.parentNode;
+                parentNode.insertBefore(newEl,oldEl);
+                parentNode.removeChild(oldEl);
+            }
+            // 2.1 生成dom元素方法
+            renderDomFromString(strDom){
+                var div = document.createElement('div');
+                div.innerHTML = strDom;
+                return div;
+            }
+            render(){
+                // 2.2 调用生成我们的真实dom元素
+                this.elBtn = this.renderDomFromString(`
+                    <button class="like-btn">
+                        <span class="like-text">${this.state.isLIKed ? '取消赞' : '点赞'}</span>
+                        <span>👍</span>
+                    </button>
+                `);
+                // 2.3 绑定事件
+                this.elBtn.addEventListener('click',this.onChanges.bind(this));
+                return this.elBtn;
+            }
+        }
+        // 3.挂载—渲染
+        var oFdomBtn = new FDomBtn();
+        var oElApp = document.getElementById('App');
+        oElApp.appendChild(oFdomBtn.render());
+    </script>
+</body>
+</html>
